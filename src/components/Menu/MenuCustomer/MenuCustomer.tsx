@@ -34,11 +34,11 @@ export default function MenuCustomer() {
         .unwrap()
         .then((dt) => {
           if (dt.statusCode === 400) {
-            router.push("/login?type=customer");
+            router.push("/login");
           }
         })
         .catch(() => {
-          router.push("/login?type=customer");
+          router.push("/login");
         });
     }
   };

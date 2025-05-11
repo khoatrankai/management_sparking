@@ -14,19 +14,26 @@ import { FaUserTie } from "react-icons/fa";
 
 // type MenuItem = Required<MenuProps>["items"][number];
 
-const SidebarCustomer = () => {
+const SlidebarCustomer = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
   const dispatch = useDispatch<AppDispatch>();
   const isMobile = useMedia({ maxWidth: 639 });
   // const { datas: dataRoleAccess } = useSelector(
   //   (state: RootState) => state.get_access_roles
   // );
   const isOpen = useSelector((state: RootState) => state.status_tab_menu);
+  const { datas: dataProfile } = useSelector(
+        (state: RootState) => state.get_profile_customer
+      );
   const itemsMenu = [
     {
       key: "customer",
       label: (
         <Link
-          href="/customer/company"
+          href="/company"
           className=""
           onClick={() => {
             if (isMobile) dispatch(toggleMenu());
@@ -46,7 +53,7 @@ const SidebarCustomer = () => {
           key: "list_project",
           label: (
             <Link
-              href="/customer/project"
+              href="/project"
               onClick={() => {
                 if (isMobile) dispatch(toggleMenu());
               }}
@@ -66,7 +73,7 @@ const SidebarCustomer = () => {
           key: "price_quote",
           label: (
             <Link
-              href="/customer/price_quote"
+              href="/price_quote"
               onClick={() => {
                 if (isMobile) dispatch(toggleMenu());
               }}
@@ -79,7 +86,7 @@ const SidebarCustomer = () => {
           key: "contract",
           label: (
             <Link
-              href="/customer/contract"
+              href="/contract"
               onClick={() => {
                 if (isMobile) dispatch(toggleMenu());
               }}
@@ -92,7 +99,7 @@ const SidebarCustomer = () => {
           key: "invoice",
           label: (
             <Link
-              href="/customer/payment"
+              href="/payment"
               className=""
               onClick={() => {
                 if (isMobile) dispatch(toggleMenu());
@@ -106,24 +113,46 @@ const SidebarCustomer = () => {
     },
   ];
   return (
-    <div
-      className={`transition-all bg-[#1A2A36] max-h-full fixed bottom-0 left-0 top-16 overflow-y-auto py-4 ${
-        isOpen.isOpen ? "sm:w-52 w-full" : "w-0 "
-      }`}
-    >
-      <Menu
-        //   onClick={onClick}
-        className="bg-[#1A2A36] !text-white"
-        style={{ width: "100%" }}
-        theme="dark"
-        color="white"
-        defaultSelectedKeys={["1"]}
-        defaultOpenKeys={["sub1"]}
-        mode="inline"
-        items={itemsMenu}
-      />
-    </div>
+   <>
+   {dataProfile && (
+         <>
+           <div className=" flex flex-1 overflow-y-hidden overflow-x-auto min-h-fit">
+             <div
+               className={`h-full sm:relative inset-x-0 absolute z-40 transition-all   ${
+                 isOpen.isOpen ? "sm:min-w-52" : "w-0 "
+               }`}
+             >
+             <div
+             className={`transition-all bg-[#1A2A36] max-h-full fixed bottom-0 left-0 top-16 overflow-y-auto py-4 ${
+               isOpen.isOpen ? "sm:w-52 w-full" : "w-0 "
+             }`}
+           >
+             <Menu
+               //   onClick={onClick}
+               defaultValue={'all_project'}
+               className="bg-[#1A2A36] !text-white"
+               style={{ width: "100%" }}
+               theme="dark"
+               color="white"
+               defaultSelectedKeys={["1"]}
+               defaultOpenKeys={["sub1"]}
+               mode="inline"
+               items={itemsMenu}
+             />
+           </div>
+             </div>
+             <div
+                   className={` transition-all flex-1 overflow-y-scroll sm:w-auto w-screen  ${
+                     isOpen.isOpen ? "" : ""
+                   }`}
+                 >
+                   {children}
+                 </div>
+           </div>
+         </>
+       )}
+   </>
   );
 };
 
-export default SidebarCustomer;
+export default SlidebarCustomer;

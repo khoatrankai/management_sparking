@@ -8,14 +8,12 @@ import usePostData from "@/hooks/usePostData";
 import { MdDeleteForever } from "react-icons/md";
 import { IGetPayment } from "@/models/contractInterface";
 import contractService from "@/services/contractService.";
-import useCheckRole from "@/utils/CheckRole";
 // import { Option } from "antd/es/mentions";
 // import { useSelector } from "react-redux";
 // import { fetchWorks } from "@/redux/store/slices/activitySlices/work.slide";
 
 export default function ModalTabPaymentReadyCustomer() {
   const [pageLimit, setPageLimit] = useState<number>(25);
-  const isAuthorized = useCheckRole(["admin-top", "contract"]);
   // const [typeID, setTypeID] = useState<string>("");
   const [dataSources, setDataSources] = useState<IGetPayment[]>([]);
   const [dataFilter, setDataFilter] = useState<IGetPayment[] | [] | undefined>(
@@ -54,7 +52,7 @@ export default function ModalTabPaymentReadyCustomer() {
         ),
     },
     {
-      title: "Cần thu",
+      title: "Số nợ",
       dataIndex: ["price"],
       className: "text-xs",
       render: (value?: number) =>
@@ -82,14 +80,14 @@ export default function ModalTabPaymentReadyCustomer() {
     );
   }, [dataSources]);
   const fetchData = async () => {
-    const res = await contractService.getPaymentReadyCustomer();
+    const res = await contractService.getPaymentReadyCustomerOfCustomer();
     if (res.statusCode === 200) {
       setDataSources(res.data);
     }
   };
   useEffect(() => {
-    if (isAuthorized) fetchData();
-  }, [isAuthorized]);
+    fetchData();
+  }, []);
 
   // useEffect(() => {
   //   if (dataTypeWork.length > 0) {

@@ -163,6 +163,15 @@ const contractService = {
       throw error;
     }
   },
+  getPaymentReadyCustomerOfCustomer: async () => {
+    try {
+      const response = await api.get(`/contract/payment-ready-customer-of-customer`);
+      return response.data;
+    } catch (error) {
+      handleError(error);
+      throw error;
+    }
+  },
   getPaymentReadySupplier: async () => {
     try {
       const response = await api.get(`/contract/payment-ready-supplier`);

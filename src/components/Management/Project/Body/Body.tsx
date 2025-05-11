@@ -197,19 +197,20 @@ export default function BodyProject() {
         <div className='flex px-4'>
         <Tabs
             className="w-full custom-tabs 1text-xs !font-medium"
-            
+            activeKey={searchParams.get('status') ?? 'all'}
+            defaultActiveKey='all'
             items={type === "gantt"?tabsGantt:tabs}
             onChange={(e)=>{
-              console.log(e,type)
+              const params = new URLSearchParams(searchParams.toString())
               if(type === 'basic' ||type === 'gantt') {
                 if(e === "all"){
-                  const params = new URLSearchParams(searchParams.toString())
                   params.delete('status')
+                  
                   router.push(`/management/all_project?${params.toString()}`)
 
                 }
                 else{
-                  const params = new URLSearchParams(searchParams.toString())
+                  
                   params.set('status',e)
                   router.push(`/management/all_project?${params.toString()}`)
                   

@@ -48,6 +48,7 @@ const projectService = {
       throw error;
     }
   },
+
   getFullProject: async (id: string) => {
     try {
       const response = await api.get(`/project/get-full-project/${id}`);

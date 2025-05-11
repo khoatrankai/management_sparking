@@ -8,18 +8,21 @@ import Attach from './Attach/Attach'
 // import { MdAssignmentAdd } from 'react-icons/md'
 // import { HiOutlineDocumentReport } from 'react-icons/hi'
 import TableWork from './TableWork/TableWork'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { FaChartGantt } from 'react-icons/fa6'
 import projectService from '@/services/projectService'
 import { IGetProject } from '@/models/projectInterface'
 import ModalStatus from './ModalStatus/ModalStatus'
+import { Select } from 'antd/lib'
+import customerService from '@/services/roleCustomerService/customerService'
 
 
 
-export default function Introduce() {
+export default function IntroduceDashboard() {
     // const [dataReview,setDataReview] = useState<IGetReview[]>([])
-    const searchParams = useSearchParams()
+    const [idProject,setIdProject] = useState<string>()
     const [dataSource,setDataSource] = useState<IGetProject>()
+    const [dataProjectByCustomer,setDataProjectByCustomer] = useState<IGetProject[]>([])
     const router = useRouter()
     const [activeKey, setActiveKey] = useState("detail");
     // const refBtn = useRef<HTMLButtonElement>()
@@ -30,12 +33,27 @@ export default function Introduce() {
       setDataSource(res.data)
     }
   }
-  useEffect(()=>{
-    const id = searchParams.get('id')
-    if(id){
-      fetchData(id)
+  const fetchDataIds = async()=>{
+    try{
+      const res = await customerService.getAllProjectByToken()
+      if(res.statusCode === 200){
+        setDataProjectByCustomer(res.data)
+      }
+    }catch(err){
+      console.log(err)
     }
-  },[searchParams])
+   
+  }
+
+  useEffect(()=>{
+    fetchDataIds()
+  },[])
+  
+  useEffect(()=>{
+    if(idProject){
+      fetchData(idProject)
+    }
+  },[idProject])
   
     const TabBarExtraContent= ()=>{
    
@@ -75,12 +93,11 @@ export default function Introduce() {
            <Detail dataSource={dataSource as IGetProject}/>
           ),
         },
-        
         {
           label: <p className='text-xs font-medium'>Công việc</p>,
           key: "works",
           children: (
-           <TableWork/>
+           <TableWork idProject={idProject}/>
           ),
         },
         {
@@ -93,15 +110,33 @@ export default function Introduce() {
         {
           label: <p className='text-xs font-medium'>Đính kèm</p>,
           key: "attach",
-          children: <Attach/>,
+          children: <Attach idProject={idProject}/>,
         }
       ];
      
      
   return (
     <div>
-        <div className='flex px-4 flex-col'>
-            
+        <div className='flex p-4 flex-col'>
+        <div>
+        <Select
+          placeholder="Dự án"
+          style={{ minWidth: 120, flex: "1 1 0%" }}
+          defaultValue={idProject}
+          onChange={(e) => {
+            setIdProject(e)
+          }}
+          showSearch
+          filterOption={(input, option) => {
+            return ((option?.label ?? "") as string)
+              .toLowerCase()
+              .includes(input.toLowerCase());
+          }}
+          options={dataProjectByCustomer.map((dt) => {
+            return { value: dt.project_id, label: dt.name };
+          })}
+        />
+      </div>
         <Tabs
             className="w-full custom-tabs 1text-xs !font-medium"
             activeKey={activeKey}

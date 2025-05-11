@@ -12,8 +12,11 @@ import { Tag } from 'antd/lib';
 import activityService from '@/services/activityService';
 import { FaRegFolderOpen } from 'react-icons/fa';
 
+type Props = {
+  idProject?:string
+}
 
-export default function TableWork() {
+export default function TableWork({idProject}:Props) {
   const searchParams = useSearchParams();
   const [dataSources,setDataSources] = useState<IGetWork[]>([])
   // const [totalPage,setTotalPage ] = useState<number>(1)
@@ -32,10 +35,10 @@ export default function TableWork() {
     }
   }
   useEffect(()=>{
-    const id = searchParams.get('id')
+    const id =idProject ?? searchParams.get('id')
     if(id)
     fetchData(id)
-  },[searchParams])
+  },[searchParams,idProject])
 
     const { datas: dataUsers } = useSelector(
         (state: RootState) => state.get_users

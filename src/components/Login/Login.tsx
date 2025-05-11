@@ -26,7 +26,6 @@ export default function Login() {
   const searchParams = useSearchParams();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isModalSuccess, setIsModalSuccess] = useState<boolean>(false);
-  const [tabLogin, setTabLogin] = useState<boolean | undefined>(undefined);
   const dispatch = useDispatch<AppDispatch>();
   const { datas: dataProfile } = useSelector(
     (state: RootState) => state.get_profile
@@ -36,36 +35,26 @@ export default function Login() {
   );
   const { postdata } = usePostData();
   const handleSubmit = async (values: { email: string; password: string }) => {
-    if (tabLogin) {
-      const statusCode = await postdata(() =>
-        customerService.loginCustomer(values)
-      );
-      if (statusCode === 200) {
-        dispatch(fetchCustomerProfile());
-        router.push("/customer");
-      }
-    } else {
-      const statusCode = await postdata(() => userService.loginUser(values));
-      if (statusCode === 200) {
-        dispatch(fetchUserProfile());
-        router.push("/management/all_work");
-      }
+    const statusCode = await postdata(() =>
+      customerService.loginCustomer(values)
+    );
+    if (statusCode === 200) {
+      dispatch(fetchCustomerProfile());
+      router.push("/");
     }
   };
   const handleSign = async (values: { email: string }) => {
-    if (tabLogin) {
-    } else {
+   
       const statusCode = await postdata(() => userService.sendSign(values));
       if (statusCode === 201) {
         setIsModalSuccess(true);
         setIsModalVisible(false);
         formSign.resetFields();
       }
-    }
+    
   };
   const fetchData = async () => {
     if (searchParams) {
-      const type = searchParams.get("type");
       const email = searchParams.get("email");
       const password = searchParams.get("password");
       const status = searchParams.get("status");
@@ -98,28 +87,18 @@ export default function Login() {
       if (email && password) {
         await handleSubmit({ email, password });
       } else {
-        if (type === "customer") {
-          setTabLogin(true);
           if (!dataProfileCustomer) {
             dispatch(fetchCustomerProfile());
           } else {
-            router.push("/customer");
+            router.push("/");
           }
-        } else {
-          setTabLogin(false);
-          if (!dataProfile) {
-            dispatch(fetchUserProfile());
-          } else {
-            router.push("/management/all_work");
-          }
-        }
+    
       }
     } else {
-      setTabLogin(false);
       if (!dataProfile) {
         dispatch(fetchUserProfile());
       } else {
-        router.push("/management/all_work");
+        router.push("/");
       }
     }
   };
@@ -154,7 +133,7 @@ export default function Login() {
             Welcome
           </p>
           <p className="xl:uppercase xl:text-base text-white font-medium sm:text-xl text-base capitalize min-w-max">
-            Login to {tabLogin ? "Customer" : "Admin"} dashboard
+            Login to Customer dashboard
           </p>
         </div>
         <Form

@@ -3,20 +3,35 @@ import { toggleMenu } from "@/redux/store/slices/menu.slice";
 import { AppDispatch, RootState } from "@/redux/store/store";
 import { Avatar } from "antd";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaUser } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import MenuCustomer from "../Menu/MenuCustomer/MenuCustomer";
+import { fetchCustomerProfile } from "@/redux/store/slices/customerSlices/get_profile.slice";
+import { useRouter } from "next/navigation";
 
 // type Props = {};
 
 const HeaderCustomer = () => {
+  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>();
   const { datas: dataProfileCustomer } = useSelector(
     (state: RootState) => state.get_profile_customer
   );
+   useEffect(() => {
+        dispatch(fetchCustomerProfile())
+          .unwrap()
+          .then((dt) => {
+            if (dt.statusCode === 400) {
+              router.push("/login");
+            }
+          })
+          .catch(() => {
+            router.push("/login");
+          });
+      }, [dispatch, router]);
   return (
     <div className="min-h-16 z-50 relative">
       <div className="h-16 bg-white px-4 flex justify-between items-center fixed inset-x-0 shadow-[rgba(17,_17,_26,_0.1)_0px_0px_16px]">
@@ -34,7 +49,7 @@ const HeaderCustomer = () => {
             height={40}
             width={140}
             onClick={() => {
-              window.location.href = "/admin";
+              window.location.href = "/";
             }}
           />
         </div>

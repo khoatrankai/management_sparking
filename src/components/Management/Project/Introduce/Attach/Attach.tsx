@@ -12,8 +12,10 @@ import { useDispatch } from 'react-redux';
 import ModalAddFolder from './ModalFolder/ModalAddFolder';
 import ModalAddFile from './ModalFile/ModalAddFile';
 
-
-export default function Attach() {
+type Props = {
+  idProject?:string
+}
+export default function Attach({idProject}:Props) {
     const searchParams = useSearchParams();
     const refBtnFolder = useRef<HTMLButtonElement>()
     const refBtnFile = useRef<HTMLButtonElement>()
@@ -65,8 +67,8 @@ export default function Attach() {
       };
     
     const fetchData = async () => {
-        const id = searchParams.get('id')
-        const res = await activityService.getDocumentsByProject(id ?? "");
+        const id = idProject ?? searchParams.get('id')
+        const res = await activityService.getDocumentsByProject( id ?? "");
         if (res.statusCode === 200) {
           const dataRes = res.data
           setDataSource(dataRes.folders ?? [])

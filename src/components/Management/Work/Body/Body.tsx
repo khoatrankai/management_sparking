@@ -228,7 +228,8 @@ export default function BodyWork() {
         
         <Tabs
             className="w-full custom-tabs 1text-xs !font-medium"
-            
+            activeKey={searchParams.get('status') ?? 'all'}
+            defaultActiveKey='all'
             items={type ==='kanban'? tabsType:type === "gantt"?tabsGantt:tabs}
             onChange={(e)=>{
               if(type === 'basic' ||type === 'gantt') {

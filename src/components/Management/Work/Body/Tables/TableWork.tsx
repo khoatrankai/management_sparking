@@ -17,7 +17,6 @@ export default function TableWork() {
   const [currentPage,setCurrentPage ] = useState<number>()
   // const [totalPage,setTotalPage ] = useState<number>(1)
   const fetchData = async (status?:string,type?:string)=>{
-    console.log(status,type)
     const res = await activityService.getWorksFilter({page:currentPage,status,type})
     if(res.statusCode === 200){
       setDataSources(res.data.datas)
